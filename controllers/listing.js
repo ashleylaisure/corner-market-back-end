@@ -36,7 +36,7 @@ router.delete("/:id", verifyToken, async (req, res) => {
         .status(403)
         .json({ error: "Not authorized to delete this listing!" });
     }
-    await listing.findByIdAndDelete(id);
+    await listing.deleteOne();
     res.status(200).json({ message: "Listing deleted successfully" });
   } catch (err) {
     console.error("Error deleting listing:", err);
