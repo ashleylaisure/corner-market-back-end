@@ -13,6 +13,16 @@ const Listing = require("../models/listing.js");
 
 // Create
 
-// Show
+// Show Listing details
+router.get("/:listingId", async (req, res) => {
+  try {
+    const listing = await Listing.findbyId(req.params.listingId).populate([
+      "author",
+    ]);
+    res.status(200).json(listing);
+  } catch (err) {
+    res.status(500).json({ err: err.message });
+  }
+});
 
-module.export = router;
+module.exports = router;
