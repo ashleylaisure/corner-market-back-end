@@ -6,7 +6,7 @@ const Listing = require("../models/listing.js");
 //I.N.D.U.C.E.S.
 
 // Index
-router.get("/", verifyToken, async (req, res) => {
+router.get("/", async (req, res) => {
   try {
     const listing = await Listing.find({})
       .populate("author")
