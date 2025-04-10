@@ -37,7 +37,7 @@ router.delete("/:id", verifyToken, async (req, res) => {
         .json({ error: "Not authorized to delete this listing!" });
     }
     await listing.deleteOne();
-    res.status(200).json({ message: "Listing deleted successfully" });
+    res.status(200).json(listing); // return the deleted listing object
   } catch (err) {
     console.error("Error deleting listing:", err);
     res.status(500).json({ error: "Internal server error" });
@@ -75,15 +75,18 @@ router.put("/:id", verifyToken, async (req, res) => {
 
 // Create
 router.post("/", verifyToken, async (req, res) => {
-  try {
-    req.body.author = req.user._id;
-    const listing = await Listing.create(req.body);
-    listing._doc.author = req.user;
-    res.status(201).json(listing);
-  } catch (err) {
-    res.status(500).json({ err: err.message });
-  }
-});
+    try {
+      req.body.author = req.user._id;
+      const listing = await Listing.create(req.body);
+  
+      // Populate the author field before sending the listing back
+      await listing.populate('author');
+      res.status(201).json(listing);
+    } catch (err) {
+        console.error("🔥 Error creating listing:", err); // ✅ more helpful logging
+      res.status(500).json({ err: err.message });
+    }
+  });
 
 //show
 
