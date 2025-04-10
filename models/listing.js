@@ -42,7 +42,7 @@ const listingSchema = new mongoose.Schema(
     condition: {
       type: String,
       required: true,
-      enum: ["New", "Used - Like New", "Used - Good", "Used -  Fair"],
+      enum: ["New", "Used - Like New", "Used - Good", "Used - Fair"],
     },
     description: {
       type: String,
