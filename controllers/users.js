@@ -1,11 +1,12 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
 
-const User = require('../models/user');
+const User = require("../models/user");
+const Profile = require("../models/profile.js");
 
-const verifyToken = require('../middleware/verify-token');
+const verifyToken = require("../middleware/verify-token");
 
-router.get('/', verifyToken, async (req, res) => {
+router.get("/", verifyToken, async (req, res) => {
   try {
     const users = await User.find({}, "username");
 
@@ -15,16 +16,69 @@ router.get('/', verifyToken, async (req, res) => {
   }
 });
 
-router.get('/:userId', verifyToken, async (req, res) => {
+//Update Users Profile
+router.put("/:userId", verifyToken, async (req, res) => {
   try {
-    if (req.user._id !== req.params.userId){
-      return res.status(403).json({ err: "Unauthorized"});
+    const userId = req.user._id;
+
+    if (req.user._id !== req.params.userId) {
+      return res.status(403).json({ err: "Unauthorized" });
     }
 
-    const user = await User.findById(req.params.userId);
+    const profile = await Profile.findOne({ user: userId });
+
+    if (!profile) {
+      return res.status(404).json({ err: "Profile not found." });
+    }
+
+    const updatedProfile = await Profile.findByIdAndUpdate(
+      profile._id,
+      req.body,
+      { new: true }
+    );
+
+    res.json({ profile: updatedProfile });
+  } catch (err) {
+    res.status(500).json({ err: err.message });
+  }
+});
+
+// Create Users Profile
+router.post("/", verifyToken, async (req, res) => {
+  try {
+    const userId = req.user._id;
+
+    const existingProfile = await Profile.findOne({ user: userId });
+    if (existingProfile) {
+      return res.status(400).json({ err: "Profile already exists." });
+    }
+
+    const newProfile = new Profile({
+      ...req.body,
+      user: userId,
+    });
+
+    const savedProfile = await newProfile.save();
+
+    await User.findByIdAndUpdate(userId, { profile: savedProfile._id });
+
+    res.status(201).json({ profile: savedProfile });
+  } catch (err) {
+    res.status(500).json({ err: err.message });
+  }
+});
+
+// Show User and User profile
+router.get("/:userId", verifyToken, async (req, res) => {
+  try {
+    if (req.user._id !== req.params.userId) {
+      return res.status(403).json({ err: "Unauthorized" });
+    }
+
+    const user = await User.findById(req.params.userId).populate("profile");
 
     if (!user) {
-      return res.status(404).json({ err: 'User not found.'});
+      return res.status(404).json({ err: "User not found." });
     }
 
     res.json({ user });
