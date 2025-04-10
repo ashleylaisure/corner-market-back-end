@@ -44,9 +44,13 @@ router.put("/:userId", verifyToken, async (req, res) => {
 });
 
 // Create Users Profile
-router.post("/", verifyToken, async (req, res) => {
+router.post("/:userId", verifyToken, async (req, res) => {
   try {
     const userId = req.user._id;
+
+    if (req.user._id !== req.params.userId) {
+      return res.status(403).json({ err: "Unauthorized" });
+    }
 
     const existingProfile = await Profile.findOne({ user: userId });
     if (existingProfile) {
