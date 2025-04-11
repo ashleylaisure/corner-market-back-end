@@ -6,6 +6,7 @@ const app = express();
 const mongoose = require("mongoose");
 const cors = require("cors");
 const logger = require("morgan");
+const path = require('path');
 
 // Import routers
 const authRouter = require("./controllers/auth");
@@ -24,6 +25,10 @@ mongoose.connection.on("connected", () => {
 app.use(cors());
 app.use(express.json());
 app.use(logger("dev"));
+
+// Serve static files from the 'public' folder
+app.use(express.static(path.join(__dirname, 'public')));
+
 
 // Routes
 app.use("/auth", authRouter);
