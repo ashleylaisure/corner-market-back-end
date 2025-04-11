@@ -52,6 +52,10 @@ const listingSchema = new mongoose.Schema(
     location: {
       type: String,
     },
+    images: {
+      type: [String],
+      default: [],
+    },
     author: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
   },
   { timestamps: true }
