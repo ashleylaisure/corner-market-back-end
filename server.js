@@ -26,8 +26,11 @@ app.use(cors());
 app.use(express.json());
 app.use(logger("dev"));
 
-// Serve static files from the 'public' folder
+// Serve everything from /public at root (/)
 app.use(express.static(path.join(__dirname, 'public')));
+
+// Serve /uploads specifically from public/uploads
+app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')));
 
 
 // Routes

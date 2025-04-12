@@ -3,6 +3,7 @@ const router = express.Router();
 
 const User = require("../models/user");
 const Profile = require("../models/profile.js");
+const Listing = require("../models/listing.js");
 
 const verifyToken = require("../middleware/verify-token");
 const { profileUpload } = require('../middleware/upload');
@@ -76,17 +77,27 @@ router.post("/:userId", verifyToken, async (req, res) => {
 // Show User and User profile
 router.get("/:userId", verifyToken, async (req, res) => {
   try {
-    if (req.user._id !== req.params.userId) {
-      return res.status(403).json({ err: "Unauthorized" });
-    }
-
-    const user = await User.findById(req.params.userId).populate("profile");
-
+    // Find user and related data
+    const user = await User.findById(req.params.userId);
     if (!user) {
       return res.status(404).json({ err: "User not found." });
     }
 
-    res.json({ user });
+    // Find profile separately
+    const profile = await Profile.findOne({ user: req.params.userId });
+    
+    // Get user's listings
+    const listings = await Listing.find({ author: req.params.userId });
+
+    // Return full profile data to any authenticated user
+    res.json({ 
+      user: {
+        _id: user._id,
+        username: user.username,
+        profile: profile,
+        listings: listings
+      }
+    });
   } catch (err) {
     res.status(500).json({ err: err.message });
   }
@@ -94,29 +105,47 @@ router.get("/:userId", verifyToken, async (req, res) => {
 
 // Upload Profile Picture
 
+//  with improved ID handling and debugging
+
 router.post('/:userId/profile-picture', verifyToken, profileUpload.single('profilePicture'), async (req, res) => {
   try {
-    // Check authorization
-    if (req.user._id !== req.params.userId) {
+    console.log('Profile picture upload attempt for user:', req.params.userId);
+    
+    // Compare as strings to ensure proper matching
+    if (req.user._id.toString() !== req.params.userId) {
       return res.status(403).json({ err: "Unauthorized" });
     }
+    
     if (!req.file) {
       return res.status(400).json({ err: "Please upload an image" });
     }
+    
     // Get image URL path
     const profilePicture = `/uploads/profiles/${req.file.filename}`;
+    console.log('Image path:', profilePicture);
 
-    // Update user's profile 
-    const profile = await Profile.findOneAndUpdate(
-      { user: req.params.userId },
-      { profilePicture },
-      { new: true }
-    );
-    if (!profile) {
-      return res.status(404).json({ err: "Profile not found." });
+    // Find profile first to debug
+    const existingProfile = await Profile.findOne({ user: req.params.userId });
+    console.log('Found profile?', !!existingProfile);
+    
+    if (!existingProfile) {
+      // Create profile if it doesn't exist
+      console.log('Creating new profile for user:', req.params.userId);
+      const newProfile = new Profile({
+        user: req.params.userId,
+        profilePicture
+      });
+      const savedProfile = await newProfile.save();
+      return res.json({ profile: savedProfile });
     }
-    res.json({ profile });
+    
+    // Update existing profile
+    existingProfile.profilePicture = profilePicture;
+    await existingProfile.save();
+    res.json({ profile: existingProfile });
+    
   } catch (err) {
+    console.error("Profile picture upload error:", err);
     res.status(500).json({ err: err.message });
   }
 });

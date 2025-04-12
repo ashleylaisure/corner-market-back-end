@@ -40,8 +40,9 @@ exports.profileUpload = multer({
     fileFilter: fileFilter
 });
 
+// Export listing upload middleware
 exports.listingUpload = multer({
     storage: listingStorage,
     limits: { fileSize: 5 * 1024 * 1024 }, 
     fileFilter: fileFilter
-}).array('images', 5); // Allow multiple images (up to 5)
+});

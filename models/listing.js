@@ -52,10 +52,11 @@ const listingSchema = new mongoose.Schema(
     location: {
       type: String,
     },
-    images: {
-      type: [String],
-      default: [],
-    },
+    images: [{
+      filename: String,
+      path: String,
+      originalname: String
+    }],
     author: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
   },
   { timestamps: true }
