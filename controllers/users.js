@@ -3,8 +3,10 @@ const router = express.Router();
 
 const User = require("../models/user");
 const Profile = require("../models/profile.js");
+const Listing = require("../models/listing.js");
 
 const verifyToken = require("../middleware/verify-token");
+const { profileUpload } = require('../middleware/upload');
 
 router.get("/", verifyToken, async (req, res) => {
   try {
@@ -78,21 +80,117 @@ router.post("/:userId", verifyToken, async (req, res) => {
 // Show User and User profile
 router.get("/:userId", verifyToken, async (req, res) => {
   try {
+
+    // Find user and related data
+    const user = await User.findById(req.params.userId);
+    if (!user) {
+      return res.status(404).json({ err: "User not found." });
+    }
+
+    // Find profile separately
+    const profile = await Profile.findOne({ user: req.params.userId });
+    
+    // Get user's listings
+    const listings = await Listing.find({ author: req.params.userId });
+
+    // Return full profile data to any authenticated user
+    res.json({ 
+      user: {
+        _id: user._id,
+        username: user.username,
+        profile: profile,
+        listings: listings
+      }
+    });
+  } catch (err) {
+    res.status(500).json({ err: err.message });
+  }
+});
+
+// Upload Profile Picture
+
+//  with improved ID handling and debugging
+
+router.post('/:userId/profile-picture', verifyToken, profileUpload.single('profilePicture'), async (req, res) => {
+  try {
+    console.log('Profile picture upload attempt for user:', req.params.userId);
+    
+    // Compare as strings to ensure proper matching
+    if (req.user._id.toString() !== req.params.userId) {
+      return res.status(403).json({ err: "Unauthorized" });
+    }
+    
+    if (!req.file) {
+      return res.status(400).json({ err: "Please upload an image" });
+    }
+    
+    // Get image URL path
+    const profilePicture = `/uploads/profiles/${req.file.filename}`;
+    console.log('Image path:', profilePicture);
+
+    // Find profile first to debug
+    const existingProfile = await Profile.findOne({ user: req.params.userId });
+    console.log('Found profile?', !!existingProfile);
+    
+    if (!existingProfile) {
+      // Create profile if it doesn't exist
+      console.log('Creating new profile for user:', req.params.userId);
+      const newProfile = new Profile({
+        user: req.params.userId,
+        profilePicture
+      });
+      const savedProfile = await newProfile.save();
+      return res.json({ profile: savedProfile });
+    }
+    
+    // Update existing profile
+    existingProfile.profilePicture = profilePicture;
+    await existingProfile.save();
+    res.json({ profile: existingProfile });
+    
+  } catch (err) {
+    console.error("Profile picture upload error:", err);
+    res.status(500).json({ err: err.message });
+  }
+});
+
+
+// Upload cover photo (similar to profile picture)
+
+router.post('/:userId/cover-photo', verifyToken, profileUpload.single('coverPhoto'), async (req, res) => {
+  try {
+    // Similar implementation as profile picture
+    if (req.user._id !== req.params.userId) {
+      return res.status(403).json({ err: "Unauthorized" });
+    }
+    
     // Remove this condition to allow any authenticated user to view profiles
     // if (req.user._id !== req.params.userId) {
     //   return res.status(403).json({ err: "Unauthorized" });
     // }
 
-    const user = await User.findById(req.params.userId).populate("profile");
 
-    if (!user) {
-      return res.status(404).json({ err: "User not found." });
+    if (!req.file) {
+      return res.status(400).json({ err: "Please upload an image" });
     }
 
-    res.json({ user });
+    const coverPhoto = `/uploads/profiles/${req.file.filename}`;
+    
+    const profile = await Profile.findOneAndUpdate(
+      { user: req.params.userId },
+      { coverPhoto },
+      { new: true }
+    );
+    if (!profile) {
+      return res.status(404).json({ err: "Profile not found" });
+    }
+
+    res.json({ profile });
   } catch (err) {
     res.status(500).json({ err: err.message });
   }
 });
+
+
 
 module.exports = router;

@@ -6,6 +6,7 @@ const app = express();
 const mongoose = require("mongoose");
 const cors = require("cors");
 const logger = require("morgan");
+const path = require('path');
 
 // Import routers
 const authRouter = require("./controllers/auth");
@@ -24,6 +25,13 @@ mongoose.connection.on("connected", () => {
 app.use(cors());
 app.use(express.json());
 app.use(logger("dev"));
+
+// Serve everything from /public at root (/)
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Serve /uploads specifically from public/uploads
+app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')));
+
 
 // Routes
 app.use("/auth", authRouter);
