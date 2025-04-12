@@ -39,6 +39,9 @@ router.put("/:userId", verifyToken, async (req, res) => {
       { new: true }
     );
 
+    // Ensure user points to this updated profile
+    await User.findByIdAndUpdate(userId, { profile: updatedProfile._id });
+
     res.json({ profile: updatedProfile });
   } catch (err) {
     res.status(500).json({ err: err.message });
@@ -77,6 +80,7 @@ router.post("/:userId", verifyToken, async (req, res) => {
 // Show User and User profile
 router.get("/:userId", verifyToken, async (req, res) => {
   try {
+
     // Find user and related data
     const user = await User.findById(req.params.userId);
     if (!user) {
@@ -159,6 +163,12 @@ router.post('/:userId/cover-photo', verifyToken, profileUpload.single('coverPhot
     if (req.user._id !== req.params.userId) {
       return res.status(403).json({ err: "Unauthorized" });
     }
+    
+    // Remove this condition to allow any authenticated user to view profiles
+    // if (req.user._id !== req.params.userId) {
+    //   return res.status(403).json({ err: "Unauthorized" });
+    // }
+
 
     if (!req.file) {
       return res.status(400).json({ err: "Please upload an image" });

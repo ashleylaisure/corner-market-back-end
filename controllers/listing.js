@@ -152,7 +152,7 @@ router.post('/:listingId/images', verifyToken, listingUpload.array('images', 5),
             path: `/uploads/listings/${file.filename}`,
             originalname: file.originalname
         }));
-
+      
         // Add new images to existing images array
         listing.images = [...listing.images, ...imageObjects];
         await listing.save();
@@ -162,6 +162,22 @@ router.post('/:listingId/images', verifyToken, listingUpload.array('images', 5),
         res.status(500).json({ err: err.message });
     }
 });
+
+// Create
+// router.post("/", verifyToken, async (req, res) => {
+//     try {
+//       req.body.author = req.user._id;
+//       const listing = await Listing.create(req.body);
+  
+//       // Populate the author field before sending the listing back
+//       await listing.populate('author');
+//       res.status(201).json(listing);
+//     } catch (err) {
+//         console.error("🔥 Error creating listing:", err); // ✅ more helpful logging
+//       res.status(500).json({ err: err.message });
+//     }
+//   });
+
 
 
 //show
