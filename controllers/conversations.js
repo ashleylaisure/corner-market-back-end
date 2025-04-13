@@ -14,11 +14,16 @@ router.get("/:userId", verifyToken, async (req, res) => {
   try {
     const conversations = await Conversation.find({
       participants: userId,
-    }).populate({
-      path: "participants",
-      select: "username",
-      path: "messages",
-    });
+    })
+      .populate({
+        path: "participants",
+        select: "username",
+      })
+      .populate({
+        path: "messages",
+        options: { sort: { createdAt: -1 }, limit: 1 },
+      })
+      .sort({ updatedAt: -1 });
 
     res.json(conversations);
   } catch (err) {
@@ -63,7 +68,7 @@ router.post("/:conversationId/messages", verifyToken, async (req, res) => {
     const savedMessage = await newMessage.save();
 
     await Conversation.findByIdAndUpdate(conversationId, {
-      push: { messages: savedMessage._id },
+      $push: { messages: savedMessage._id },
     });
 
     res.status(201).json(newMessage);
@@ -73,26 +78,27 @@ router.post("/:conversationId/messages", verifyToken, async (req, res) => {
 });
 
 // GET Shows messages between users
-router.get(
-  "/:conversationId/messages/:user1/:user2",
-  verifyToken,
-  async (req, res) => {
-    const { conversationId, user1, user2 } = req.params;
+router.get("/:conversationId/messages/", verifyToken, async (req, res) => {
+  const { conversationId } = req.params;
 
-    try {
-      const conversation = await Conversation.findById(conversationId);
+  try {
+    const conversation = await Conversation.findById(conversationId);
 
-      if (!conversation) {
-        return res.status(404).json({ message: "Conversation not found" });
-      }
-
-      const messages = await Message.find({ conversationId }).sort("createdAt");
-
-      res.status(200).json(messages);
-    } catch (err) {
-      res.status(500).json({ error: err.message });
+    if (!conversation) {
+      return res.status(404).json({ message: "Conversation not found" });
     }
+
+    const messages = await Message.find({ conversationId })
+      .sort("createdAt")
+      .populate([
+        { path: "senderId", select: "username" },
+        { path: "receiverId", select: "username" },
+      ]);
+
+    res.status(200).json(messages);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
-);
+});
 
 module.exports = router;
