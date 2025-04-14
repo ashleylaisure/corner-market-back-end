@@ -3,6 +3,8 @@ const verifyToken = require("../middleware/verify-token.js");
 const router = express.Router();
 const Listing = require("../models/listing.js");
 const { listingUpload } = require('../middleware/upload');
+const fs = require('fs');
+const path = require('path');
 
 
 //I.N.D.U.C.E.S.
@@ -66,9 +68,22 @@ router.delete('/:listingId/images/:imageIndex', verifyToken, async (req, res) =>
             return res.status(400).json({ err: "Invalid image index" });
         }
 
-        // Remove image at the specified index
-        listing.images.splice(imageIndex, 1);
+        // Grab the image info before removing it
+        const [removedImage] = listing.images.splice(imageIndex, 1);
         await listing.save();
+
+        // Build the absolute path to the file
+        const imagePath = path.join(__dirname, '..', 'public', removedImage.path);
+
+        // Attempt to delete the file
+        fs.unlink(imagePath, (err) => {
+            if (err) {
+                console.error("Failed to delete image file:", err.message);
+               
+            } else {
+                console.log("✅ Deleted image file:", removedImage.filename);
+            }
+        });
 
         res.json(listing);
     } catch (err) {
@@ -79,33 +94,35 @@ router.delete('/:listingId/images/:imageIndex', verifyToken, async (req, res) =>
 // UPDATE - Update listing details and optionally add images
 router.put("/:id", verifyToken, listingUpload.array('images', 5), async (req, res) => {
     try {
-      const listing = await Listing.findById(req.params.id);
-      if (!listing) return res.status(404).json({ error: "Listing not found" });
-      if (listing.author.toString() !== req.user._id) return res.status(403).json({ error: "Unauthorized" });
-  
-      // Merge updates
-      const updatableFields = ["title", "price", "category", "condition", "description", "location"];
-      updatableFields.forEach((field) => {
-        if (req.body[field]) listing[field] = req.body[field];
-      });
-  
-      // Append new images if any
-      if (req.files.length > 0) {
-        const newImageObjects = req.files.map(file => ({
-            filename: file.filename,
-            path: `/uploads/listings/${file.filename}`,
-            originalname: file.originalname
-        }));
-        listing.images.push(...newImageUrls);
-      }
-  
-      await listing.save();
-      await listing.populate("author");
-      res.status(200).json(listing);
+        console.log("🗂 Uploaded Files:", req.files); 
+        const listing = await Listing.findById(req.params.id);
+        if (!listing) return res.status(404).json({ error: "Listing not found" });
+        if (listing.author.toString() !== req.user._id) return res.status(403).json({ error: "Unauthorized" });
+
+        // Merge updates
+        const updatableFields = ["title", "price", "category", "condition", "description", "location"];
+        updatableFields.forEach((field) => {
+            if (req.body[field]) listing[field] = req.body[field];
+        });
+
+        // Append new images if any
+        if (req.files.length > 0) {
+            const newImageObjects = req.files.map(file => ({
+                filename: file.filename,
+                path: `/uploads/listings/${file.filename}`,
+                originalname: file.originalname
+            }));
+            listing.images.push(...newImageObjects);
+        }
+
+        await listing.save();
+        console.log(" Saved listing:", listing);
+        await listing.populate("author");
+        res.status(200).json(listing);
     } catch (err) {
-      res.status(500).json({ error: err.message });
+        res.status(500).json({ error: err.message });
     }
-  });
+});
 
 // CREATE - Create new listing with images
 router.post("/", verifyToken, listingUpload.array('images', 5), async (req, res) => {
@@ -152,7 +169,7 @@ router.post('/:listingId/images', verifyToken, listingUpload.array('images', 5),
             path: `/uploads/listings/${file.filename}`,
             originalname: file.originalname
         }));
-      
+
         // Add new images to existing images array
         listing.images = [...listing.images, ...imageObjects];
         await listing.save();
@@ -168,7 +185,7 @@ router.post('/:listingId/images', verifyToken, listingUpload.array('images', 5),
 //     try {
 //       req.body.author = req.user._id;
 //       const listing = await Listing.create(req.body);
-  
+
 //       // Populate the author field before sending the listing back
 //       await listing.populate('author');
 //       res.status(201).json(listing);
