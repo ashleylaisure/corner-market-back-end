@@ -51,17 +51,19 @@ router.put("/:userId", verifyToken, async (req, res) => {
 // Create Users Profile
 router.post("/:userId", verifyToken, async (req, res) => {
   try {
-    const userId = req.user._id;
+    const userId = req.params.userId;
 
-    if (req.user._id !== req.params.userId) {
+    if (req.user._id !== userId) {
       return res.status(403).json({ err: "Unauthorized" });
     }
 
+    // Prevent duplicate profile creation
     const existingProfile = await Profile.findOne({ user: userId });
     if (existingProfile) {
       return res.status(400).json({ err: "Profile already exists." });
     }
 
+    // Create and save the new profile
     const newProfile = new Profile({
       ...req.body,
       user: userId,
@@ -69,10 +71,13 @@ router.post("/:userId", verifyToken, async (req, res) => {
 
     const savedProfile = await newProfile.save();
 
+    // Update the user to reference this new profile
     await User.findByIdAndUpdate(userId, { profile: savedProfile._id });
 
+    // Return the newly created profile
     res.status(201).json({ profile: savedProfile });
   } catch (err) {
+    console.error("Error creating profile:", err);
     res.status(500).json({ err: err.message });
   }
 });

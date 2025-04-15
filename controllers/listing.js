@@ -201,18 +201,22 @@ router.post('/:listingId/images', verifyToken, listingUpload.array('images', 5),
 
 router.get("/:listingId", async (req, res) => {
     try {
-        const listing = await Listing.findById(req.params.listingId).populate([
-            "author",
-        ]);
-
-        if (!listing) {
-            return res.status(404).json({ error: "Listing not found" });
-        }
-
-        res.status(200).json(listing);
+      const listing = await Listing.findById(req.params.listingId).populate({
+        path: "author",
+        populate: {
+          path: "profile",
+        },
+      });
+  
+      if (!listing) {
+        return res.status(404).json({ error: "Listing not found" });
+      }
+  
+      res.status(200).json(listing);
     } catch (err) {
-        res.status(500).json({ err: err.message });
+      res.status(500).json({ err: err.message });
     }
-});
+  });
+  
 
 module.exports = router;
