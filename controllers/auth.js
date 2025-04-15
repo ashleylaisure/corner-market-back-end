@@ -9,7 +9,11 @@ const saltRounds = 12;
 
 router.post('/sign-up', async (req, res) => {
   try {
-    const userInDatabase = await User.findOne({ username: req.body.username });
+    // const userInDatabase = await User.findOne({ username: req.body.username });
+
+    // making the search case insestive
+    const userInDatabase = await User.findOne({ 
+      username: { $regex: new RegExp(`${req.body.username}$`, 'i') }})
     
     if (userInDatabase) {
       return res.status(409).json({err: 'Username already taken.'});
