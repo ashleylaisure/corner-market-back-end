@@ -21,6 +21,27 @@ router.get("/", async (req, res) => {
     }
 });
 
+// Filter Index by category
+router.get('/filter/:category', async (req, res) => {
+    try {
+        const { category } = req.params;
+
+        const query = category ? { category: decodeURIComponent(category) } : {};
+
+        const filteredListings = await Listing.find(query)
+            .populate("author")
+            .sort({createdAt: "desc"});
+
+        if (!filteredListings) {
+            return res.status(404).json({ error: "No listings Available" });
+        }
+
+        res.status(200).json(filteredListings)
+    } catch (err) {
+        res.status(500).json({err: err.message})
+    }
+})
+
 // Delete
 // Deletes a specific listing by ID
 // Requires authentication and authorization (only listing owner can delete)
