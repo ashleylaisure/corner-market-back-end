@@ -115,7 +115,6 @@ router.delete('/:listingId/images/:imageIndex', verifyToken, async (req, res) =>
 // UPDATE - Update listing details and optionally add images
 router.put("/:id", verifyToken, listingUpload.array('images', 5), async (req, res) => {
     try {
-        console.log("🗂 Uploaded Files:", req.files); 
         const listing = await Listing.findById(req.params.id);
         if (!listing) return res.status(404).json({ error: "Listing not found" });
         if (listing.author.toString() !== req.user._id) return res.status(403).json({ error: "Unauthorized" });
@@ -137,7 +136,7 @@ router.put("/:id", verifyToken, listingUpload.array('images', 5), async (req, re
         }
 
         await listing.save();
-        console.log(" Saved listing:", listing);
+        
         await listing.populate("author");
         res.status(200).json(listing);
     } catch (err) {
