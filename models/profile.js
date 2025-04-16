@@ -17,9 +17,13 @@ const profileSchema = new mongoose.Schema(
       default: "",
     },
     location: {
-      type: String,
-      trim: true,
-      default: "",
+      city: String,
+      state: String,
+      zip: String,
+      coordinates: {
+        lat: Number,
+        lng: Number
+      }
     },
     emailAddress: {
       type: String,

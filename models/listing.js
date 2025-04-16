@@ -50,7 +50,13 @@ const listingSchema = new mongoose.Schema(
       maxLength: 500,
     },
     location: {
-      type: String,
+      city: String,
+      state: String,
+      zip: String,
+      coordinates: {
+        lat: Number,
+        lng: Number
+      }
     },
     images: [{
       filename: String,
