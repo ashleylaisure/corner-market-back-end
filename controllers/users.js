@@ -118,7 +118,6 @@ router.get("/:userId", verifyToken, async (req, res) => {
 
 router.post('/:userId/profile-picture', verifyToken, profileUpload.single('profilePicture'), async (req, res) => {
   try {
-    console.log('Profile picture upload attempt for user:', req.params.userId);
     
     // Compare as strings to ensure proper matching
     if (req.user._id.toString() !== req.params.userId) {
