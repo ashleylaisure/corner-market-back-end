@@ -8,8 +8,27 @@ const User = require("../models/user.js");
 
 //I.N.D.U.C.E.S.
 
+// GET conversation details
+router.get("/:conversationId", verifyToken, async (req, res) => {
+  const { conversationId } = req.params;
+  try {
+    const conversation = await Conversation.findById(conversationId).populate({
+      path: "participants",
+      select: "username _id",
+    });
+
+    if (!conversation) {
+      return res.status(404).json({ error: "Conversation not found" });
+    }
+
+    res.json(conversation);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // GET shows all of users conversations
-router.get("/:userId", verifyToken, async (req, res) => {
+router.get("/user/:userId", verifyToken, async (req, res) => {
   const { userId } = req.params;
   try {
     const conversations = await Conversation.find({
