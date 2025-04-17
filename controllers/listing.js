@@ -5,6 +5,7 @@ const Listing = require("../models/listing.js");
 const { listingUpload } = require('../middleware/upload');
 const fs = require('fs');
 const path = require('path');
+const User = require('../models/user');
 
 
 //I.N.D.U.C.E.S.
@@ -42,11 +43,44 @@ router.get('/filter/:category', async (req, res) => {
     }
 })
 
+
+// GET /listings/nearby
+// Fetch listings within a certain radius of a given latitude and longitude
+
+router.get("/nearby", async (req, res) => {
+    const { lat, lng, radius } = req.query;
+  
+    if (!lat || !lng || !radius) {
+      return res.status(400).json({ error: "Latitude, longitude, and radius are required" });
+    }
+  
+    try {
+      const listings = await Listing.find({
+        "location.coordinates": {
+          $geoWithin: {
+            $centerSphere: [
+              [parseFloat(lng), parseFloat(lat)],
+              parseFloat(radius) / 3963.2, // radius in miles
+            ],
+          },
+        },
+        // Only return listings that actually have coordinates
+      "location.coordinates.0": { $exists: true },
+      }).populate({
+        path: "author",
+        populate: { path: "profile" },
+      });
+  
+      res.json(listings);
+    } catch (err) {
+      console.error("Error fetching nearby listings:", err);
+      res.status(500).json({ error: "Server error" });
+    }
+  });
+
+
 // Delete
 // Deletes a specific listing by ID
-// Requires authentication and authorization (only listing owner can delete)
-// Returns 200 status with success message if deleted successfully
-// Returns 404 if listing not found, 403 if unauthorized, 500 for server errors
 
 router.delete("/:id", verifyToken, async (req, res) => {
     try {
@@ -147,6 +181,11 @@ router.put("/:id", verifyToken, listingUpload.array('images', 5), async (req, re
 // CREATE - Create new listing with images
 router.post("/", verifyToken, listingUpload.array('images', 5), async (req, res) => {
     try {
+        const user = await User.findById(req.user._id).populate("profile");
+
+    if (!user.profile || !user.profile.location || !user.profile.location.coordinates) {
+      return res.status(400).json({ err: "User location not found. Please update your profile." });
+    }
         const imageObjects = req.files.map(file => ({
             filename: file.filename,
             path: `/uploads/listings/${file.filename}`,
@@ -155,8 +194,16 @@ router.post("/", verifyToken, listingUpload.array('images', 5), async (req, res)
         const newListing = new Listing({
             ...req.body,
             images: imageObjects,
-            author: req.user._id
+            author: req.user._id,
+            location: {
+                ...user.profile.location,
+                coordinates: [
+                  user.profile.location.coordinates.lng,
+                  user.profile.location.coordinates.lat
+                ]
+              },
         });
+
         await newListing.save();
         await newListing.populate("author");
         res.status(201).json(newListing);
@@ -210,7 +257,7 @@ router.post('/:listingId/images', verifyToken, listingUpload.array('images', 5),
 //       await listing.populate('author');
 //       res.status(201).json(listing);
 //     } catch (err) {
-//         console.error("🔥 Error creating listing:", err); // ✅ more helpful logging
+//         console.error("Error creating listing:", err); // more helpful logging
 //       res.status(500).json({ err: err.message });
 //     }
 //   });
