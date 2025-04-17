@@ -54,9 +54,9 @@ const listingSchema = new mongoose.Schema(
       state: String,
       zip: String,
       coordinates: {
-        lat: Number,
-        lng: Number
-      }
+        type: [Number], // [lng, lat]
+        index: "2dsphere", // enables geospatial queries
+      },
     },
     images: [{
       filename: String,
