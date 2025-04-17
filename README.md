@@ -1,80 +1,183 @@
-# Minesweeper
+# Corner Market
 
-#### Minesweeper is a logic-based game where the goal is to reveal all the squares on the board without triggering any hidden mines.
+#### Declutter your space and make extra cash with our easy-to-use online marketplace—post items you no longer need and connect with local buyers in your area.
 
-<!-- images of app (inc. logo  homepage etc.)-->
-
+![HomePage](./public/images/Screenshot%202025-04-17%20090416.png)
+![ProfilePage](./public/images/Screenshot%202025-04-17%20090921.png)
+![ListingPage](./public/images/Screenshot%202025-04-17%20090944.png)
 
 ## Description
-Minesweeper is a game where mines are hidden in a grid of squares. The object of the game is to clear the board without selecting a mine. Each square is designated a number that represents the amount of mines located in the 8 squares surrounding it. Using this information the user must navigate around the board placing down flags (with a right-click) where they think mines are located. The user wins when all squares have either been flagged or opened. 
+
+Corner Market is a community-driven platform where users can sign up, create personalized profiles, and showcase their listings along with a short bio. Whether you're looking to sell something locally or find unique items nearby, Corner Market makes it easy. Post your listing and connect with other users through direct messaging to discuss details, negotiate prices, and arrange meetups.
 
 ## Table of Contents
-* [Technologies Used](#technologiesused)
-* [Features](#features)
-* [Design](#design)
-* [Project Next Steps](#nextsteps)
-* [Deployed App](#deployment)
-* [About the Author](#author)
+
+- [Technologies Used](#technologiesused)
+- [Features](#features)
+- [Design](#design)
+- [Project Next Steps](#nextsteps)
+- [Deployed App](#deployment)
+- [Contributors](#contributors)
 
 ## <a name="technologiesused"></a>Technologies Used
-* JavaScript
-* HTML5
-* CSS3
 
+### Frontend
+
+- **React** – UI library for building dynamic user interfaces
+- **React Router** – Client-side routing for React apps
+- **React Dropzone** – File upload with drag-and-drop support
+- **React Leaflet** – React components for Leaflet maps
+- **Leaflet** – Interactive maps for the web
+- **React Icons** – Popular icon packs as React components
+- **Boxicons** – Simple and customizable icon set
+
+### Backend
+
+- **Node.js** – JavaScript runtime for server-side development
+- **Express** – Web framework for Node.js
+- **Mongoose** – ODM for MongoDB, simplifying data modeling
+- **jsonwebtoken (JWT)** – Secure token-based authentication
+- **Express Validator** – Middleware for validating/sanitizing user input
+- **Multer** – Middleware for handling file uploads
+- **UUID** – For generating unique IDs
+- **Morgan** – HTTP request logger
+- **Bcrypt** – Password hashing for secure login
+
+### Utilities & Tools
+
+- **Dotenv** – Load environment variables from a `.env` file
+- **CORS** – Enable secure cross-origin requests
+- **@mapbox/mapbox-sdk** – Mapbox SDK for geolocation and mapping services
+
+### Languages
+
+- **JavaScript** – Core programming language for both frontend and backend
+- **CSS** – Styling language used for visual design and layout
+- **HTML** – Markup language for structuring web content
+
+---
+
+### Stack
+
+This project uses the **MERN stack**:
+
+- **MongoDB**
+- **Express**
+- **React**
+- **Node.js**
 
 ## Features
-* Mines counter - reflects the number of mines hidden on the board, reduces as the mines have been flagged 
-* Emoji - reset button 
-* Timer - counting time spent on the game
-* Right Click - placing a flag on the square
-* Left Click - revealing the square 
 
+- **User Authentication**
+
+  - Sign up as a new user
+  - Log in with an existing account
+
+- **Listings**
+
+  - Create a new listing
+  - View all listings
+  - View details of a specific listing
+  - Edit your own listings
+  - Delete your own listings
+  - Filter listings view based on a category
+
+- **Listing Navigation**
+
+  - Click on a listing to navigate to its details page
+  - From the details page, authors can:
+    - Edit their listing
+    - Delete their listing
+
+- **Location-Based Filtering**
+
+  - Filter listings to only show those posted in the user’s local area
+
+- **User Interaction**
+
+  - View other users’ listings
+  - View other users’ profiles
+
+- **Messaging System**
+
+  - Users can send messages to other users from a listing details page
+  - Initiate conversations directly from a listing interaction
+  - Each conversation has a dedicated thread that displays all messages
+  - Users can view the full history of conversations
+  - Direct messaging between users without leaving the platform
 
 ## Wireframe Images
-<img src="https://i.ibb.co/sgrXXhF/Screenshot-2024-12-09-195540.png">
 
-## Notion Planning
-* https://www.notion.so/Minesweeper-158133426c96816a9f9cf23fb9071e41?pvs=4
+![WireFrames](./public/images/Screenshot%202025-04-17%20093205.png)
+
+## ERD Images & DB Structure
+
+![dbStructure](./public/images/Dbstructure.png)
+![Components](./public/images/components.png)
+
+## Trello Planning
+
+🔗 [Trello Planning Board](https://trello.com/b/5vQvZsrP/mern-stack-crud-app)
 
 ## <a name="design"></a>Design
-* For the design of my Minesweeper, I decided to divert from the traditional gray colorway and went with a blue/green look.
 
+placeholder
 
 ## <a name="nextsteps"></a>Project Next Steps
+
 #### List of Future Features
-* Allow the user to select the difficulty level - changing the board size and amount of mines 
-* Create a leaderboard to record the time the game was completed
+
+- **Save Listings**
+
+  - Users will be able to save/bookmark other users’ listings for later viewing
+
+- **Author Rating System**
+
+  - Users can rate listing authors, contributing to a visible average rating on their profile
+
+- **UI Improvements**
+
+  - Enhance user interface for better usability and visual polish across the app
+  - Include mobile support
+
+- **Messaging Enhancements**
+  - Improve the in-app messaging experience with features like read receipts, typing indicators, and real-time updates
 
 ## <a name="deployment"></a>Deployed Link
-[Github Pages](https://ashleylaisure.github.io/Minesweeper/)
 
-* You can view the repository:
-[Github.com](https://github.com/ashleylaisure/Minesweeper)
-* If unable to view please go live locally through VS Code
+placeholder deployed link
 
-## <a name="author"></a>About The Author
-After countless hours mastering Minesweeper as a teenager, I discovered my passion for problem-solving and creativity. This led me to the exciting challenge of developing my own version of the classic game. Whether I’m diving into code or exploring new ideas, I’m driven by a love for innovation and the joy of creating experiences that others can enjoy.
-    
+# Repositories
+
+## Back-End Repository
+
+- [Corner Market Back-End](https://github.com/ashleylaisure/corner-market-back-end)
+
+## Front-End Repository
+
+- [Corner Market Front-End](https://github.com/ashleylaisure/corner-market-front-end)
+
+## <a name="contributors"></a>Contributors
+
+### Ashley Laisure - SCRUM Lead Developer
+
+- [LinkedIn](https://www.linkedin.com/)
+
+- [Github](https://github.com/)
+
+### Casey Joiner - Lead Front-End Developer
+
+- [LinkedIn](https://www.linkedin.com/)
+
+- [Github](https://github.com/)
+
+### James Palumbo - Lead Back-End Developer
+
+- [LinkedIn](https://www.linkedin.com/)
+
+- [Github](https://github.com/)
+
 ## Works Cited:
-Minesweeper includes a flood feature: when a square with zero bombs around it is revealed, the flood mechanism is triggered. This causes the program to recursively call itself, revealing the surrounding squares. The process continues until it reaches a boundary of numbered squares surrounding the initial square.
 
-Additional research was done to understand how to write a recursive function.
-
-* https://developer.mozilla.org/en-US/docs/Glossary/Recursion
-* https://www.freecodecamp.org/news/recursion-in-javascript/
-
-
-Emoji's used were copied and pasted from the Unicode site.
-
-* https://unicode.org/emoji/charts/full-emoji-list.html
-
-
-While making the timer function I referenced these websites.
-
-* https://www.freecodecamp.org/news/javascript-settimeout-how-to-set-a-timer-in-javascript-or-sleep-for-n-seconds/
-* https://developer.mozilla.org/en-US/docs/Web/API/Window/setInterval
-* https://www.google.com/search?q=interval+timer+in+javascript&sca_esv=59d83465afa8625f&sxsrf=ADLYWILHo3AG_2Ti4M81b_keZUm22PeT-g%3A1734394247417&ei=h8FgZ8-OGaCe5NoPtO622QE&oq=interval+timer+in+jav&gs_lp=Egxnd3Mtd2l6LXNlcnAiFWludGVydmFsIHRpbWVyIGluIGphdioCCAAyBhAAGBYYHjIGEAAYFhgeMgYQABgWGB4yBhAAGBYYHjIGEAAYFhgeMgYQABgWGB4yBhAAGBYYHjIGEAAYFhgeMgYQABgWGB4yBhAAGBYYHkjWGlDJAVjdDXABeAGQAQCYAVOgAZIEqgEBN7gBAcgBAPgBAZgCCKACrQTCAgoQABiwAxjWBBhHwgINEAAYgAQYsAMYQxiKBcICChAAGIAEGEMYigXCAgUQABiABMICChAAGIAEGBQYhwLCAgcQABiABBgKmAMAiAYBkAYKkgcBOKAH5TA&sclient=gws-wiz-serp 
-
-I wanted to add a popup modal to the navigation of the game so that users could read instructions to play the game. This YouTube video was extremely helpful in understanding how to hide elements that become available with an event listener. 
-
--   https://www.youtube.com/watch?v=gLWIYk0Sd38
+- [MDN Web Docs](https://developer.mozilla.org/)
+- [Stack Overflow](https://stackoverflow.com/)
