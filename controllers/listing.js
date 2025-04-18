@@ -149,34 +149,48 @@ router.delete('/:listingId/images/:imageIndex', verifyToken, async (req, res) =>
 // UPDATE - Update listing details and optionally add images
 router.put("/:id", verifyToken, listingUpload.array('images', 5), async (req, res) => {
     try {
-        const listing = await Listing.findById(req.params.id);
-        if (!listing) return res.status(404).json({ error: "Listing not found" });
-        if (listing.author.toString() !== req.user._id) return res.status(403).json({ error: "Unauthorized" });
-
-        // Merge updates
-        const updatableFields = ["title", "price", "category", "condition", "description", "location"];
-        updatableFields.forEach((field) => {
-            if (req.body[field]) listing[field] = req.body[field];
-        });
-
-        // Append new images if any
-        if (req.files.length > 0) {
-            const newImageObjects = req.files.map(file => ({
-                filename: file.filename,
-                path: `/uploads/listings/${file.filename}`,
-                originalname: file.originalname
-            }));
-            listing.images.push(...newImageObjects);
+      const listing = await Listing.findById(req.params.id);
+      if (!listing) return res.status(404).json({ error: "Listing not found" });
+  
+      if (listing.author.toString() !== req.user._id) {
+        return res.status(403).json({ error: "Unauthorized" });
+      }
+  
+      // Parse location if sent as a JSON string
+      if (typeof req.body.location === "string") {
+        try {
+          req.body.location = JSON.parse(req.body.location);
+        } catch (err) {
+          return res.status(400).json({ error: "Invalid location format" });
         }
-
-        await listing.save();
-        
-        await listing.populate("author");
-        res.status(200).json(listing);
+      }
+  
+      // Merge updates for updatable fields
+      const updatableFields = ["title", "price", "category", "condition", "description", "location"];
+      updatableFields.forEach((field) => {
+        if (req.body[field] !== undefined) {
+          listing[field] = req.body[field];
+        }
+      });
+  
+      // Append new images if any
+      if (req.files.length > 0) {
+        const newImageObjects = req.files.map(file => ({
+          filename: file.filename,
+          path: `/uploads/listings/${file.filename}`,
+          originalname: file.originalname
+        }));
+        listing.images.push(...newImageObjects);
+      }
+  
+      await listing.save();
+      await listing.populate("author");
+  
+      res.status(200).json(listing);
     } catch (err) {
-        res.status(500).json({ error: err.message });
+      res.status(500).json({ error: err.message });
     }
-});
+  });
 
 // CREATE - Create new listing with images
 router.post("/", verifyToken, listingUpload.array('images', 5), async (req, res) => {
