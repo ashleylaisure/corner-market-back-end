@@ -50,6 +50,22 @@ router.get("/user/:userId", verifyToken, async (req, res) => {
   }
 });
 
+// GET unread message count for a user
+router.get("/unread-count/:userId", verifyToken, async (req, res) => {
+  const { userId } = req.params;
+
+  try {
+    const count = await Message.countDocuments({
+      receiverId: userId,
+      isRead: false,
+    });
+
+    res.status(200).json({ unreadCount: count });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // Post create new Conversation
 router.post("/", verifyToken, async (req, res) => {
   const { senderId, receiverId } = req.body;
@@ -83,6 +99,7 @@ router.post("/:conversationId/messages", verifyToken, async (req, res) => {
       senderId,
       receiverId,
       message,
+      isRead: false,
     });
     const savedMessage = await newMessage.save();
 
@@ -95,6 +112,25 @@ router.post("/:conversationId/messages", verifyToken, async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+
+// PUT mark messages as read in a conversation
+router.put(
+  "/:conversationId/mark-read/:userId",
+  verifyToken,
+  async (req, res) => {
+    const { conversationId, userId } = req.params;
+
+    try {
+      await Message.updateMany(
+        { conversationId, receiverId: userId, isRead: false },
+        { $set: { isRead: true } }
+      );
+      res.status(200).json({ success: true });
+    } catch (err) {
+      res.status(500).json({ error: err.message });
+    }
+  }
+);
 
 // GET Shows messages between users
 router.get("/:conversationId/messages/", verifyToken, async (req, res) => {
