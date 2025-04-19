@@ -30,7 +30,7 @@ mongoose.connection.on("connected", () => {
 
 // --- Recommended Detailed CORS Configuration ---
 const allowedOrigins = [
-  "https://corner-market.netlify.app/", 'http://localhost:5173'
+  "https://corner-market.netlify.app/", 'http://localhost:5173', 'http://localhost:3000',
   // Add local dev URL if needed: 'http://localhost:3000',
 ];
 const corsOptions = {
@@ -69,6 +69,11 @@ app.use("/listings", listingRouter);
 app.use("/conversations", conversationsRouter);
 
 // Start the server and listen on port 3000
-app.listen(3000, () => {
-  console.log("The express app is ready!");
+// app.listen(3000, () => {
+//   console.log("The express app is ready!");
+// });
+// CRITICAL FIX FOR HEROKU: Use process.env.PORT
+const PORT = process.env.PORT || 3000; // Use Heroku's port or 3000 locally
+app.listen(PORT, () => {
+    console.log(`Server is running on Port ${PORT}.`); // Log the correct port
 });
