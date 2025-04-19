@@ -23,10 +23,34 @@ mongoose.connection.on("connected", () => {
 });
 
 // Middleware
-app.use(cors({
-  origin: "https://corner-market.netlify.app/",
-  credentials: true
-}));
+// app.use(cors({
+//   origin: ,
+//   credentials: true
+// }));
+
+// --- Recommended Detailed CORS Configuration ---
+const allowedOrigins = [
+  "https://corner-market.netlify.app/", 'http://localhost:5173'
+  // Add local dev URL if needed: 'http://localhost:3000',
+];
+const corsOptions = {
+  origin: function (origin, callback) {
+      if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+          callback(null, true);
+      } else {
+          console.warn(`CORS blocked origin: ${origin}`);
+          callback(new Error('Not allowed by CORS'));
+      }
+  },
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS', // Explicitly allow methods including OPTIONS
+  allowedHeaders: 'Origin, X-Requested-With, Content-Type, Accept, Authorization', // Allow common headers + Authorization
+  credentials: true, // Allow credentials (cookies/auth headers)
+  optionsSuccessStatus: 200
+};
+app.use(cors(corsOptions)); // Apply detailed CORS options
+
+
+
 app.use(express.json());
 app.use(logger("dev"));
 
