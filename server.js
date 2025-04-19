@@ -30,7 +30,7 @@ mongoose.connection.on("connected", () => {
 
 // --- Recommended Detailed CORS Configuration ---
 const allowedOrigins = [
-  "https://corner-market.netlify.app/", 'http://localhost:5173', 'http://localhost:3000',
+  "https://corner-market.netlify.app", 'http://localhost:5173', 'http://localhost:3000',
   // Add local dev URL if needed: 'http://localhost:3000',
 ];
 const corsOptions = {
