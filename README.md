@@ -2,8 +2,8 @@
 
 #### Declutter your space and make extra cash with our easy-to-use online marketplace—post items you no longer need and connect with local buyers in your area.
 
-![HomePage](./public/images/Screenshot%202025-04-17%20090416.png)
-![ProfilePage](./public/images/Screenshot%202025-04-17%20090921.png)
+![HomePage](./public/images/Screenshot%202025-04-19%20114428.png)
+![ProfilePage](./public/images/Screenshot%202025-04-19%20114607.png)
 ![ListingPage](./public/images/Screenshot%202025-04-17%20090944.png)
 
 ## Description
@@ -119,9 +119,11 @@ This project uses the **MERN stack**:
 
 🔗 [Trello Planning Board](https://trello.com/b/5vQvZsrP/mern-stack-crud-app)
 
-## <a name="design"></a>Design
+## <a name="design"></a>Design Inspiration
 
-placeholder
+Facebook Marketplace
+![Facebook Marketplace](./public/images/Screenshot%202025-04-19%20114918.png)
+
 
 ## <a name="nextsteps"></a>Project Next Steps
 
@@ -145,7 +147,7 @@ placeholder
 
 ## <a name="deployment"></a>Deployed Link
 
-placeholder deployed link
+- [Corner Market]()
 
 # Repositories
 
@@ -161,17 +163,23 @@ placeholder deployed link
 
 ### Ashley Laisure - SCRUM Lead Developer
 
-- [LinkedIn](https://www.linkedin.com/)
+- Major Contribution: UI Design
 
-- [Github](https://github.com/)
+- [LinkedIn](www.linkedin.com/in/ashley-laisure-6a9475354)
+
+- [Github](https://github.com/ashleylaisure)
 
 ### Casey Joiner - Lead Front-End Developer
+
+- Major Contribution: Location Integration
 
 - [LinkedIn](https://www.linkedin.com/)
 
 - [Github](https://github.com/)
 
 ### James Palumbo - Lead Back-End Developer
+
+- Major Contribution: Messaging System
 
 - [LinkedIn](https://www.linkedin.com/)
 
@@ -181,3 +189,4 @@ placeholder deployed link
 
 - [MDN Web Docs](https://developer.mozilla.org/)
 - [Stack Overflow](https://stackoverflow.com/)
+- [Regular Expressions](https://coderpad.io/blog/development/the-complete-guide-to-regular-expressions-regex/)
