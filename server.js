@@ -23,7 +23,9 @@ mongoose.connection.on("connected", () => {
 });
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: "https://corner-market.netlify.app/"
+}));
 app.use(express.json());
 app.use(logger("dev"));
 
