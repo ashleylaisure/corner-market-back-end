@@ -147,7 +147,7 @@ Facebook Marketplace
 
 ## <a name="deployment"></a>Deployed Link
 
-- [Corner Market]()
+- [Corner Market](https://corner-market.netlify.app/)
 
 # Repositories
 
