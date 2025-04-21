@@ -131,20 +131,14 @@ router.delete('/:listingId/images/:imageIndex', verifyToken, async (req, res) =>
         const imagePath = path.join(__dirname, '..', 'public', removedImage.path);
 
         // Attempt to delete the file
-        fs.unlink(imagePath, (err) => {
-            if (err) {
-                console.error("Failed to delete image file:", err.message);
-               
-            } else {
-                console.log("✅ Deleted image file:", removedImage.filename);
-            }
+        fs.unlink(imagePath, () => {
         });
-
-        res.json(listing);
-    } catch (err) {
-        res.status(500).json({ err: err.message });
-    }
-});
+    
+        res.status(200).json({ message: "Image removed successfully" });
+      } catch (err) {
+        res.status(500).json({ err: "Server error" });
+      }
+    });
 
 // UPDATE - Update listing details and optionally add images
 router.put("/:id", verifyToken, listingUpload.array('images', 5), async (req, res) => {

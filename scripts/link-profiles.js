@@ -13,18 +13,14 @@ const Profile = require("../models/profile");
 async function linkProfilesToUsers() {
   try {
     await mongoose.connect(process.env.MONGODB_URI);
-    console.log("Connected to MongoDB");
-
+    
     const users = await User.find();
     for (let user of users) {
       const profile = await Profile.findOne({ user: user._id });
       if (profile && !user.profile) {
         await User.findByIdAndUpdate(user._id, { profile: profile._id });
-        console.log(` Linked profile for user: ${user.username}`);
       }
     }
-
-    console.log(" All done!");
     process.exit();
   } catch (err) {
     console.error(" Error linking profiles:", err);
