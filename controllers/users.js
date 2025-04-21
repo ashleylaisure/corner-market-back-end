@@ -130,15 +130,12 @@ router.post('/:userId/profile-picture', verifyToken, profileUpload.single('profi
     
     // Get image URL path
     const profilePicture = `/uploads/profiles/${req.file.filename}`;
-    console.log('Image path:', profilePicture);
-
+    
     // Find profile first to debug
     const existingProfile = await Profile.findOne({ user: req.params.userId });
-    console.log('Found profile?', !!existingProfile);
     
     if (!existingProfile) {
       // Create profile if it doesn't exist
-      console.log('Creating new profile for user:', req.params.userId);
       const newProfile = new Profile({
         user: req.params.userId,
         profilePicture

@@ -22,11 +22,6 @@ mongoose.connection.on("connected", () => {
   console.log(`Connected to MongoDB ${mongoose.connection.name}.`);
 });
 
-// Middleware
-// app.use(cors({
-//   origin: ,
-//   credentials: true
-// }));
 
 // --- Recommended Detailed CORS Configuration ---
 const allowedOrigins = [
@@ -68,10 +63,6 @@ app.use("/users", usersRouter);
 app.use("/listings", listingRouter);
 app.use("/conversations", conversationsRouter);
 
-// Start the server and listen on port 3000
-// app.listen(3000, () => {
-//   console.log("The express app is ready!");
-// });
 // CRITICAL FIX FOR HEROKU: Use process.env.PORT
 const PORT = process.env.PORT || 3000; // Use Heroku's port or 3000 locally
 app.listen(PORT, () => {
