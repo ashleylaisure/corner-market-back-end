@@ -171,11 +171,15 @@ Facebook Marketplace
 
 ### Casey Joiner - Lead Front-End Developer
 
-- Major Contribution: Location Integration
+- Major Contribution: Location Integration (Geocoding, Reverse Geocoding, and Interactive Maps using Mapbox and Leaflet)
+  - Utilized [Mapbox Geocoding API](https://docs.mapbox.com/api/search/geocoding/) to convert user-inputted city/state or ZIP code into geographic coordinates.
+  - Implemented [Mapbox Reverse Geocoding](https://docs.mapbox.com/api/search/geocoding/) to display city and state from coordinates.
+  - Integrated [Leaflet](https://leafletjs.com/) to render both interactive and static maps for user profiles and listing pages.
+  - Built a location-based filter system to show nearby listings within a configurable radius.
 
-- [LinkedIn](https://www.linkedin.com/)
+- [LinkedIn](https://www.linkedin.com/in/casey-joiner/)
 
-- [Github](https://github.com/)
+- [Github](https://github.com/ce-joiner)
 
 ### James Palumbo - Lead Back-End Developer
 
@@ -190,3 +194,6 @@ Facebook Marketplace
 - [MDN Web Docs](https://developer.mozilla.org/)
 - [Stack Overflow](https://stackoverflow.com/)
 - [Regular Expressions](https://coderpad.io/blog/development/the-complete-guide-to-regular-expressions-regex/)
+- [Multer Middleware](https://www.npmjs.com/package/multer)
+- [Leaflet](https://leafletjs.com/)
+- [Mapbox](https://www.mapbox.com/)
